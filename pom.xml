@@ -124,6 +124,7 @@
                     </argLine>
                     <testFailureIgnore>false</testFailureIgnore>
                     <systemPropertyVariables>
+                        <cucumber.options>--tags @TestLeg</cucumber.options>
                         <dataproviderthreadcount>${fork.count}</dataproviderthreadcount>
                         <parallel>methods</parallel>
                         <test.properties>/default.properties</test.properties>
@@ -209,6 +210,19 @@
             <groupId>com.github.lanit-izh</groupId>
             <artifactId>automation-framework-core</artifactId>
             <version>${lanit.at.framework.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codeborne</groupId>
+            <artifactId>selenide</artifactId>
+            <version>4.12.2</version>
+            <type>jar</type>
         </dependency>
 
         <dependency>

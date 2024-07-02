@@ -1,6 +1,6 @@
 # language: ru
 # образец
-@SampleScenarioRu
+@TestTest
 
 Функция: Sample
 

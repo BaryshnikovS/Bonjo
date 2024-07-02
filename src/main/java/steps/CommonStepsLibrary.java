@@ -8,6 +8,7 @@ import cucumber.api.java.ru.Тогда;
 import io.cucumber.datatable.DataTable;
 import io.qameta.atlas.webdriver.AtlasWebElement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import pages.html_elements.Button;
 import pages.html_elements.CheckBox;
 import pages.html_elements.DropDown;
@@ -24,6 +25,7 @@ import utils.data.helpers.DataRandomGenerator;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.not;
@@ -45,8 +47,16 @@ public final class CommonStepsLibrary extends BaseSteps {
 
     @И("проверить, что тайтл страницы = {string}")
     public void checkPageTitle(String expectedTitle) {
-        String actualTitle = getCurrentPage().getWrappedDriver().getTitle();
-        softAssert().assertTrue(expectedTitle.equalsIgnoreCase(actualTitle), "Ожидалось что тайтл страницы '" + expectedTitle + "', фактически:'" + actualTitle + "'");
+        try {
+            String actualTitle = getCurrentPage().getWrappedDriver().getTitle();
+            softAssert().assertTrue(expectedTitle.equalsIgnoreCase(actualTitle), "Ожидалось что тайтл страницы '" + expectedTitle + "', фактически:'" + actualTitle + "'");
+        } catch (WebDriverException e) {
+            // Обработка исключений, связанных с WebDriver
+            softAssert().fail("Ошибка при получении тайтла страницы: " + e.getMessage());
+        } catch (Exception e) {
+            // Обработка других возможных исключений
+            softAssert().fail("Непредвиденная ошибка: " + e.getMessage());
+        }
     }
 
 
@@ -229,8 +239,17 @@ public final class CommonStepsLibrary extends BaseSteps {
      */
     @Тогда("проверить что адрес ссылки  = {string}")
     public void checkLinkAddress(String expectedLinkAddress) {
-        String actualLinkAddress = ((Link) getUIElement(Link.class)).getLinkAddress();
-        softAssert().assertEquals(expectedLinkAddress, actualLinkAddress, "Адрес ссылки '" + actualLinkAddress + "'. Не совпадает с ожидаемым значением: '" + expectedLinkAddress + "'");
+        try {
+            Link link = (Link) getUIElement(Link.class);
+            String actualLinkAddress = link.getLinkAddress();
+            softAssert().assertEquals(expectedLinkAddress, actualLinkAddress, "Адрес ссылки '" + actualLinkAddress + "'. Не совпадает с ожидаемым значением: '" + expectedLinkAddress + "'");
+        } catch (ClassCastException | NoSuchElementException e) {
+            // Обработка исключений, связанных с получением элемента Link
+            softAssert().fail("Ошибка при получении ссылки: " + e.getMessage());
+        } catch (Exception e) {
+            // Обработка других возможных исключений
+            softAssert().fail("Непредвиденная ошибка: " + e.getMessage());
+        }
     }
 
     @И("в выпадающем списке  выбрать значение {string}")
@@ -382,7 +401,7 @@ public final class CommonStepsLibrary extends BaseSteps {
                 return tab;
             }
         }
-        throw new FrameworkRuntimeException("Не найдена вкладка с именем" + pageTitle);
+        throw new FrameworkRuntimeException("Не найдена вкладка с именем " + pageTitle);
     }
 
 

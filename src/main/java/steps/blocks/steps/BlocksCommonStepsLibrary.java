@@ -7,6 +7,7 @@ import ru.yandex.qatools.matchers.webdriver.ExistsMatcher;
 import steps.BaseSteps;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import static org.hamcrest.Matchers.not;
 
@@ -15,13 +16,20 @@ public final class BlocksCommonStepsLibrary extends BaseSteps {
 
     @И("на текущей странице перейти к блоку {string}")
     public void focusOnBlock(String blockNameStr) {
-        resetCurrentBlock();
-        String[] blocks = blockNameStr.split(">");
-        setCurrentBlockByName(blocks[0]);
-        checkBlockExist();
-        if (blocks.length > 1) {
-            focusOnBlockInBlock(blockNameStr.substring(blockNameStr.indexOf(">") + 1));
+        try {
+            resetCurrentBlock();
+            String[] blocks = blockNameStr.split(">");
+            setCurrentBlockByName(blocks[0]);
+            checkBlockExist();
+            if (blocks.length > 1) {
+                focusOnBlockInBlock(blockNameStr.substring(blockNameStr.indexOf(">") + 1));
+            }
+        } catch (NoSuchElementException e) {
+            softAssert().fail("Не удалось найти блок: " + e.getMessage());
+        } catch (Exception e) {
+            softAssert().fail("Непредвиденная ошибка:" + e.getMessage());
         }
+
     }
 
     @И("на текущей странице перейти к блоку {string} - {string}")
